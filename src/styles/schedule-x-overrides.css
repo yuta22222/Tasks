@@ -1,0 +1,674 @@
+/* ════════════════════════════════════════════════════════════
+   Schedule-X — TaskFlow Dark Theme  (完全リデザイン)
+   ════════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════════════════
+   不要なラベルを非表示
+   ════════════════════════════════════════════════════════════ */
+/* デフォルトのビュー選択UI（カスタムタブに置き換え済み） */
+.sx-react-calendar-wrapper .sx__view-selection {
+  display: none !important;
+}
+/* 「ビュー」「日付」ラベル */
+.sx-react-calendar-wrapper .sx__view-selection-label,
+.sx-react-calendar-wrapper .sx__date-input-label {
+  display: none !important;
+}
+
+/* ── CSS変数をラッパーに注入 ─────────────────────────────── */
+.sx-react-calendar-wrapper {
+  --sx-color-primary:              #818CF8;
+  --sx-color-on-primary:           #ffffff;
+  --sx-color-primary-container:    rgba(129, 140, 248, 0.15);
+  --sx-color-surface:              var(--surface-0, #18181E);
+  --sx-color-surface-container:    var(--surface-1, #1F1F27);
+  --sx-color-surface-container-high: var(--surface-2, #26262F);
+  --sx-color-on-surface:           var(--text-primary, #F2F2F8);
+  --sx-color-on-surface-variant:   var(--text-secondary, #A8A8C0);
+  --sx-color-outline:              rgba(255, 255, 255, 0.10);
+  --sx-color-outline-variant:      rgba(255, 255, 255, 0.07);
+  --sx-border:                     1px solid rgba(255, 255, 255, 0.08);
+
+  font-family: var(--font-inter), var(--font-noto-sans-jp), system-ui, sans-serif;
+  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--surface-0, #18181E);
+  color: var(--text-primary, #F2F2F8);
+  -webkit-font-smoothing: antialiased;
+  color-scheme: dark;
+  /* 親の height を引き継ぎ、内部スクロールを有効にする */
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+/* 全ボーダーをまとめてリセット */
+.sx-react-calendar-wrapper *,
+.sx-react-calendar-wrapper *::before,
+.sx-react-calendar-wrapper *::after {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+  box-sizing: border-box;
+}
+
+/* 高さをカレンダー内部まで伝播 */
+.sx-react-calendar-wrapper .sx__calendar,
+.sx-react-calendar-wrapper .sx__view-container,
+.sx-react-calendar-wrapper .sx__week-wrapper,
+.sx-react-calendar-wrapper .sx__day-view {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  height: 100% !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   HEADER
+   ════════════════════════════════════════════════════════════ */
+
+.sx-react-calendar-wrapper .sx__calendar-header {
+  background: var(--surface-1, #1F1F27);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  padding: 12px 16px;
+  min-height: 56px;
+}
+
+.sx-react-calendar-wrapper .sx__calendar-header-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* ── 月・年タイトル ── */
+.sx-react-calendar-wrapper .sx__range-heading {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary, #F2F2F8) !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1 !important;
+  padding: 0 4px !important;
+  background: transparent !important;
+  border: none !important;
+  flex: 1;
+}
+
+/* ── 前後ナビゲーション ── */
+.sx-react-calendar-wrapper .sx__forward-backward-navigation {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.sx-react-calendar-wrapper .sx__chevron-wrapper {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--text-secondary, #A8A8C0) !important;
+  transition: background 0.15s, color 0.15s !important;
+  cursor: pointer !important;
+}
+.sx-react-calendar-wrapper .sx__chevron-wrapper:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-primary, #F2F2F8) !important;
+}
+
+.sx-react-calendar-wrapper .sx__chevron {
+  border-color: currentColor !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-width: 2px !important;
+}
+
+/* ── 今日ボタン ── */
+.sx-react-calendar-wrapper .sx__today-button {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--accent, #818CF8) !important;
+  background: rgba(129, 140, 248, 0.12) !important;
+  border: 1px solid rgba(129, 140, 248, 0.25) !important;
+  border-radius: 8px !important;
+  padding: 5px 12px !important;
+  height: 30px !important;
+  transition: background 0.15s, border-color 0.15s !important;
+  cursor: pointer !important;
+  line-height: 1 !important;
+}
+.sx-react-calendar-wrapper .sx__today-button:hover {
+  background: rgba(129, 140, 248, 0.20) !important;
+  border-color: rgba(129, 140, 248, 0.40) !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   VIEW SELECTOR  （月 / 週 / 日 タブ）
+   ════════════════════════════════════════════════════════════ */
+
+.sx-react-calendar-wrapper .sx__view-selection {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  padding: 0 !important;
+}
+
+.sx-react-calendar-wrapper .sx__view-selection-items {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+  padding: 3px !important;
+}
+
+.sx-react-calendar-wrapper .sx__view-selection-item {
+  position: relative !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--text-secondary, #A8A8C0) !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 7px !important;
+  padding: 4px 12px !important;
+  height: 28px !important;
+  line-height: 1 !important;
+  transition: color 0.15s, background 0.15s !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+.sx-react-calendar-wrapper .sx__view-selection-item:hover {
+  color: var(--text-primary, #F2F2F8) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* アクティブなビュー */
+.sx-react-calendar-wrapper .sx__view-selection-selected-item,
+.sx-react-calendar-wrapper .sx__view-selection-item.sx__view-selection-selected-item {
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  background: var(--accent, #818CF8) !important;
+  border-radius: 7px !important;
+  box-shadow: 0 1px 4px rgba(129, 140, 248, 0.40) !important;
+}
+.sx-react-calendar-wrapper .sx__view-selection-selected-item:hover {
+  background: var(--accent-hover, #6366F1) !important;
+}
+
+.sx-react-calendar-wrapper .sx__view-selection-chevron {
+  display: none !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   MONTH VIEW
+   ════════════════════════════════════════════════════════════ */
+
+.sx-react-calendar-wrapper .sx__month-grid-wrapper {
+  background: var(--surface-0, #18181E) !important;
+}
+
+/* 曜日ヘッダー行 */
+.sx-react-calendar-wrapper .sx__month-grid-day__header-day-name {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  color: var(--text-secondary, #A8A8C0) !important;
+  padding: 10px 0 8px !important;
+  text-align: center !important;
+}
+
+/* 日付セル */
+.sx-react-calendar-wrapper .sx__month-grid-day {
+  background: var(--surface-0, #18181E) !important;
+  min-height: 90px;
+}
+.sx-react-calendar-wrapper .sx__month-grid-day:hover {
+  background: var(--surface-1, #1F1F27) !important;
+}
+
+.sx-react-calendar-wrapper .sx__month-grid-day__header {
+  display: flex !important;
+  justify-content: flex-end !important;
+  padding: 6px 8px 4px !important;
+}
+
+/* 日付数字 */
+.sx-react-calendar-wrapper .sx__month-grid-day__header-date {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--text-secondary, #A8A8C0) !important;
+  border-radius: 50% !important;
+  line-height: 1 !important;
+  transition: background 0.15s, color 0.15s !important;
+  cursor: default !important;
+}
+.sx-react-calendar-wrapper .sx__month-grid-day:hover .sx__month-grid-day__header-date {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: var(--text-primary, #F2F2F8) !important;
+}
+
+/* 今日の日付 */
+.sx-react-calendar-wrapper .sx__month-grid-day__header-date.sx__is-today {
+  background: var(--accent, #818CF8) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25) !important;
+}
+
+/* 今月外の日 */
+.sx-react-calendar-wrapper .sx__month-grid-day--outside-month {
+  background: rgba(0, 0, 0, 0.15) !important;
+}
+.sx-react-calendar-wrapper .sx__month-grid-day--outside-month .sx__month-grid-day__header-date {
+  color: var(--muted, #6A6A82) !important;
+  opacity: 0.6 !important;
+}
+
+/* ── 月グリッドのイベント ── */
+.sx-react-calendar-wrapper .sx__month-grid-event {
+  border-radius: 5px !important;
+  margin: 1px 4px !important;
+  padding: 2px 7px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  line-height: 1.5 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  cursor: pointer !important;
+  transition: opacity 0.15s !important;
+}
+.sx-react-calendar-wrapper .sx__month-grid-event:hover {
+  opacity: 0.85 !important;
+}
+.sx-react-calendar-wrapper .sx__month-grid-event-time {
+  font-size: 10px !important;
+  opacity: 0.75 !important;
+  margin-right: 3px !important;
+}
+
+/* もっと表示 */
+.sx-react-calendar-wrapper .sx__month-grid-day__events-more {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: var(--accent, #818CF8) !important;
+  padding: 1px 6px !important;
+  margin: 1px 4px !important;
+  border-radius: 4px !important;
+  background: rgba(129, 140, 248, 0.10) !important;
+  cursor: pointer !important;
+  transition: background 0.15s !important;
+}
+.sx-react-calendar-wrapper .sx__month-grid-day__events-more:hover {
+  background: rgba(129, 140, 248, 0.18) !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   WEEK / DAY VIEW — ヘッダー
+   ════════════════════════════════════════════════════════════ */
+
+.sx-react-calendar-wrapper .sx__week-header,
+.sx-react-calendar-wrapper .sx__week-header-content {
+  background: var(--surface-1, #1F1F27) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+}
+
+/* 曜日名 */
+.sx-react-calendar-wrapper .sx__week-grid__day-name {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--text-secondary, #A8A8C0) !important;
+  text-align: center !important;
+  padding: 8px 0 4px !important;
+}
+
+/* 日付数字（週・日ビュー） */
+.sx-react-calendar-wrapper .sx__week-grid__date {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 2px !important;
+  padding: 4px 0 8px !important;
+}
+
+.sx-react-calendar-wrapper .sx__week-grid__date-number {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: var(--text-primary, #F2F2F8) !important;
+  border-radius: 50% !important;
+  line-height: 1 !important;
+  transition: background 0.15s !important;
+}
+
+/* 今日（週・日ビュー） */
+.sx-react-calendar-wrapper .sx__week-grid__date--is-today .sx__week-grid__date-number {
+  background: var(--accent, #818CF8) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25) !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   WEEK / DAY VIEW — タイムグリッド
+   ════════════════════════════════════════════════════════════ */
+
+/* スクロール可能コンテナ: 24時間分を収める */
+.sx-react-calendar-wrapper .sx__week-grid-wrapper {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+}
+
+.sx-react-calendar-wrapper .sx__week-grid {
+  background: var(--surface-0, #18181E) !important;
+  /* 1時間 = 56px × 24 = 1344px で24時間分確保 */
+  min-height: 1344px !important;
+}
+
+/* 時間軸テキスト */
+.sx-react-calendar-wrapper .sx__week-grid__hour-text {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  color: var(--muted, #6A6A82) !important;
+  letter-spacing: 0.02em !important;
+  padding-right: 8px !important;
+  text-align: right !important;
+}
+
+.sx-react-calendar-wrapper .sx__week-grid__time-axis {
+  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 1時間あたりの行高: 56px（24行 × 56px = 1344px） */
+.sx-react-calendar-wrapper .sx__week-grid__hour {
+  border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+  height: 56px !important;
+  min-height: 56px !important;
+}
+
+/* 現在時刻インジケーター */
+.sx-react-calendar-wrapper .sx__current-time-indicator,
+.sx-react-calendar-wrapper .sx__current-time-indicator-full-week {
+  background: #F87171 !important;
+  height: 2px !important;
+  opacity: 1 !important;
+  z-index: 10;
+}
+.sx-react-calendar-wrapper .sx__current-time-indicator::before,
+.sx-react-calendar-wrapper .sx__current-time-indicator-full-week::before {
+  content: '' !important;
+  position: absolute !important;
+  left: -4px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 9px !important;
+  height: 9px !important;
+  border-radius: 50% !important;
+  background: #F87171 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   TIME GRID EVENTS（週・日ビューのイベントブロック）
+   ════════════════════════════════════════════════════════════ */
+
+.sx-react-calendar-wrapper .sx__time-grid-event {
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+  transition: filter 0.15s, transform 0.1s !important;
+}
+.sx-react-calendar-wrapper .sx__time-grid-event:hover {
+  filter: brightness(1.15) !important;
+  transform: scale(1.01) !important;
+}
+
+.sx-react-calendar-wrapper .sx__time-grid-event-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1px !important;
+  padding: 5px 8px !important;
+  height: 100% !important;
+  border-left: 3px solid rgba(255, 255, 255, 0.40) !important;
+}
+
+.sx-react-calendar-wrapper .sx__time-grid-event-title {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  flex: 1 !important;
+}
+
+.sx-react-calendar-wrapper .sx__time-grid-event-time {
+  font-size: 10px !important;
+  font-weight: 400 !important;
+  opacity: 0.72 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+}
+
+.sx-react-calendar-wrapper .sx__title-and-time-compact {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 5px !important;
+  overflow: hidden !important;
+}
+.sx-react-calendar-wrapper .sx__title-and-time-compact .sx__time-grid-event-title {
+  min-width: 0 !important;
+}
+.sx-react-calendar-wrapper .sx__title-and-time-compact .sx__time-grid-event-time {
+  flex-shrink: 0 !important;
+  font-size: 10px !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   カレンダー別カラー（urgency）
+   ════════════════════════════════════════════════════════════ */
+
+/* ── イベント（Indigo） ── */
+.sx-react-calendar-wrapper [class*="--event"] {
+  background: rgba(129, 140, 248, 0.18) !important;
+  color: #c7d2fe !important;
+}
+.sx-react-calendar-wrapper [class*="--event"] .sx__time-grid-event-inner {
+  border-left-color: #818CF8 !important;
+}
+
+/* ── 遅延タスク（Red） ── */
+.sx-react-calendar-wrapper [class*="--task-overdue"] {
+  background: rgba(248, 113, 113, 0.18) !important;
+  color: #fca5a5 !important;
+}
+.sx-react-calendar-wrapper [class*="--task-overdue"] .sx__time-grid-event-inner {
+  border-left-color: #F87171 !important;
+}
+
+/* ── 今日のタスク（Amber） ── */
+.sx-react-calendar-wrapper [class*="--task-today"] {
+  background: rgba(251, 191, 36, 0.18) !important;
+  color: #fde68a !important;
+}
+.sx-react-calendar-wrapper [class*="--task-today"] .sx__time-grid-event-inner {
+  border-left-color: #FBBF24 !important;
+}
+
+/* ── もうすぐのタスク（Orange） ── */
+.sx-react-calendar-wrapper [class*="--task-soon"] {
+  background: rgba(251, 146, 60, 0.18) !important;
+  color: #fed7aa !important;
+}
+.sx-react-calendar-wrapper [class*="--task-soon"] .sx__time-grid-event-inner {
+  border-left-color: #FB923C !important;
+}
+
+/* ── 通常タスク（Green） ── */
+.sx-react-calendar-wrapper [class*="--task-normal"] {
+  background: rgba(52, 211, 153, 0.15) !important;
+  color: #6ee7b7 !important;
+}
+.sx-react-calendar-wrapper [class*="--task-normal"] .sx__time-grid-event-inner {
+  border-left-color: #34D399 !important;
+}
+
+/* ── 月グリッドのイベントカラー ── */
+.sx-react-calendar-wrapper .sx__month-grid-event[class*="--event"] {
+  background: rgba(129, 140, 248, 0.22) !important;
+  color: #c7d2fe !important;
+}
+.sx-react-calendar-wrapper .sx__month-grid-event[class*="--task-overdue"] {
+  background: rgba(248, 113, 113, 0.22) !important;
+  color: #fca5a5 !important;
+}
+.sx-react-calendar-wrapper .sx__month-grid-event[class*="--task-today"] {
+  background: rgba(251, 191, 36, 0.22) !important;
+  color: #fde68a !important;
+}
+.sx-react-calendar-wrapper .sx__month-grid-event[class*="--task-soon"] {
+  background: rgba(251, 146, 60, 0.22) !important;
+  color: #fed7aa !important;
+}
+.sx-react-calendar-wrapper .sx__month-grid-event[class*="--task-normal"] {
+  background: rgba(52, 211, 153, 0.18) !important;
+  color: #6ee7b7 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   DATE GRID EVENTS（終日イベント）
+   ════════════════════════════════════════════════════════════ */
+
+.sx-react-calendar-wrapper .sx__date-grid-event {
+  border-radius: 5px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  padding: 2px 8px !important;
+  border: none !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+.sx-react-calendar-wrapper .sx__date-grid-event-text {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+.sx-react-calendar-wrapper .sx__date-grid-event-time {
+  font-size: 10px !important;
+  opacity: 0.72 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   EVENT MODAL（クリック時ポップアップ）
+   ════════════════════════════════════════════════════════════ */
+
+.sx-react-calendar-wrapper .sx__event-modal,
+.sx-react-calendar-wrapper .sx__event-modal-default {
+  background: var(--surface-2, #26262F) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 14px !important;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.4),
+    0 20px 60px -10px rgba(0, 0, 0, 0.7) !important;
+  color: var(--text-primary, #F2F2F8) !important;
+  padding: 16px !important;
+  min-width: 220px !important;
+}
+
+.sx-react-calendar-wrapper .sx__event-modal__title {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary, #F2F2F8) !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.3 !important;
+  margin-bottom: 4px !important;
+}
+
+.sx-react-calendar-wrapper .sx__event-modal__time {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: var(--text-secondary, #A8A8C0) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.sx-react-calendar-wrapper .sx__event-modal__color-icon {
+  border-radius: 4px !important;
+  width: 10px !important;
+  height: 10px !important;
+  flex-shrink: 0 !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   LIST VIEW
+   ════════════════════════════════════════════════════════════ */
+
+.sx-react-calendar-wrapper .sx__list-day-header {
+  background: var(--surface-1, #1F1F27) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  padding: 8px 16px !important;
+}
+.sx-react-calendar-wrapper .sx__list-day-date {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary, #F2F2F8) !important;
+}
+.sx-react-calendar-wrapper .sx__list-event {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  padding: 10px 16px !important;
+  background: transparent !important;
+  transition: background 0.15s !important;
+}
+.sx-react-calendar-wrapper .sx__list-event:hover {
+  background: var(--surface-1, #1F1F27) !important;
+}
+.sx-react-calendar-wrapper .sx__list-event-title {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--text-primary, #F2F2F8) !important;
+}
+.sx-react-calendar-wrapper .sx__list-event-start-time,
+.sx-react-calendar-wrapper .sx__list-event-end-time {
+  font-size: 11px !important;
+  color: var(--text-secondary, #A8A8C0) !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ════════════════════════════════════════════════════════════ */
+
+.sx-react-calendar-wrapper ::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.sx-react-calendar-wrapper ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sx-react-calendar-wrapper ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+.sx-react-calendar-wrapper ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.20);
+}

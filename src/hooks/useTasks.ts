@@ -38,11 +38,12 @@ export function useTasks() {
 
   const createTask = useMutation({
     mutationFn: async (input: Omit<TaskInsert, 'user_id'> & { user_id?: string }) => {
-      // user_id は DB の DEFAULT auth.uid() に任せる
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not authenticated')
       const { user_id: _uid, ...rest } = input
       const { data, error } = await supabase
         .from('tasks')
-        .insert(rest as any)
+        .insert({ ...rest, user_id: user.id } as any)
         .select()
         .single()
       if (error) throw error

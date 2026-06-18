@@ -29,14 +29,14 @@ export function TodaySummary() {
       {/* メインカード */}
       <div
         className="col-span-2 p-5 rounded-2xl relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #3A3CC8 0%, #5B5EE8 50%, #7C7FFA 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #064E35 0%, #0A7A50 50%, #10B981 100%)' }}
       >
         {/* 装飾 */}
-        <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/8 rounded-full pointer-events-none" />
-        <div className="absolute right-6 bottom-0 w-24 h-24 bg-white/5 rounded-full pointer-events-none" />
+        <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full pointer-events-none" style={{ background: 'rgba(255,255,255,0.06)' }} />
+        <div className="absolute right-6 bottom-0 w-24 h-24 rounded-full pointer-events-none" style={{ background: 'rgba(255,255,255,0.04)' }} />
 
         <div className="relative">
-          <div className="flex items-center gap-1.5 text-indigo-200 mb-2">
+          <div className="flex items-center gap-1.5 mb-2" style={{ color: 'rgba(255,255,255,0.65)' }}>
             <CheckSquare size={13} />
             <span className="text-xs font-medium tracking-wide">未完了タスク</span>
           </div>
@@ -44,19 +44,19 @@ export function TodaySummary() {
             <span className="text-5xl font-black text-white" style={{ letterSpacing: '-0.04em' }}>
               {pendingCount}
             </span>
-            <span className="text-indigo-200 text-sm font-medium">件</span>
+            <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.65)' }}>件</span>
           </div>
 
           {(overdueCount > 0 || dueSoonCount > 0) && (
             <div className="flex flex-wrap gap-2 mt-3">
               {overdueCount > 0 && (
-                <span className="flex items-center gap-1 text-xs bg-red-500/25 text-red-100 border border-red-400/20 px-2.5 py-1 rounded-full font-medium">
+                <span className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: 'rgba(248,113,113,0.2)', color: '#fca5a5', border: '1px solid rgba(248,113,113,0.25)' }}>
                   <AlertTriangle size={10} />
                   遅延 {overdueCount}件
                 </span>
               )}
               {dueSoonCount > 0 && (
-                <span className="flex items-center gap-1 text-xs bg-amber-400/20 text-amber-100 border border-amber-400/20 px-2.5 py-1 rounded-full font-medium">
+                <span className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.9)', border: '1px solid rgba(255,255,255,0.2)' }}>
                   <Clock size={10} />
                   期限近い {dueSoonCount}件
                 </span>

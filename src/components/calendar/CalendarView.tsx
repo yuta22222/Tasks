@@ -17,13 +17,24 @@ import { useUIStore } from '@/stores/uiStore'
 import type { CalendarEvent } from '@/types/event'
 
 /* ─── Temporal ヘルパー ─── */
-function toZonedDateTime(isoString: string): Temporal.ZonedDateTime {
+const pad = (n: number) => String(n).padStart(2, '0')
+
+// UTCのISO文字列 → JST時刻値をUTC ZonedDateTimeとして返す（schedule-x表示用）
+function toLocalDateTimeString(isoString: string): Temporal.ZonedDateTime {
   try {
-    return Temporal.Instant.from(isoString).toZonedDateTimeISO('Asia/Tokyo')
+    const zdt = Temporal.Instant.from(isoString).toZonedDateTimeISO('Asia/Tokyo')
+    return Temporal.ZonedDateTime.from({
+      year: zdt.year, month: zdt.month, day: zdt.day,
+      hour: zdt.hour, minute: zdt.minute, second: 0, timeZone: 'UTC',
+    })
   } catch {
     const n = isoString.replace(' ', 'T')
     const w = n.includes('+') || n.includes('Z') ? n : n + '+09:00'
-    return Temporal.Instant.from(w).toZonedDateTimeISO('Asia/Tokyo')
+    const zdt = Temporal.Instant.from(w).toZonedDateTimeISO('Asia/Tokyo')
+    return Temporal.ZonedDateTime.from({
+      year: zdt.year, month: zdt.month, day: zdt.day,
+      hour: zdt.hour, minute: zdt.minute, second: 0, timeZone: 'UTC',
+    })
   }
 }
 function toPlainDate(d: string): Temporal.PlainDate {
@@ -135,8 +146,8 @@ export function CalendarView() {
     ...events.map((e) => ({
       id: e.id,
       title: e.title,
-      start: toZonedDateTime(e.start_at),
-      end:   toZonedDateTime(e.end_at),
+      start: toLocalDateTimeString(e.start_at) as unknown as Temporal.ZonedDateTime,
+      end:   toLocalDateTimeString(e.end_at) as unknown as Temporal.ZonedDateTime,
       calendarId: 'event',
     })),
     ...tasks

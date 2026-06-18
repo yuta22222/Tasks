@@ -125,6 +125,12 @@ export function CalendarView() {
   }, [calendarEventModalOpen, closeCalendarEventModal])
 
   /* ─── カレンダーイベント生成 ─── */
+  // 予定化済みのタスクIDセット
+  const scheduledTaskIds = useMemo(
+    () => new Set(events.map(e => e.task_id).filter(Boolean)),
+    [events]
+  )
+
   const calendarEvents = useMemo(() => [
     ...events.map((e) => ({
       id: e.id,
@@ -134,7 +140,7 @@ export function CalendarView() {
       calendarId: 'event',
     })),
     ...tasks
-      .filter((t) => t.due_date)
+      .filter((t) => t.due_date && !scheduledTaskIds.has(t.id))
       .map((t) => {
         const urgency = getUrgency(t)
         if (urgency === 'completed') return null
@@ -256,7 +262,7 @@ export function CalendarView() {
       start_at = plainDateToISO(Temporal.PlainDate.from(f.startDate), f.startTime, tz)
       end_at   = plainDateToISO(Temporal.PlainDate.from(f.endDate),   f.endTime,   tz)
     }
-    return { title: f.title.trim(), start_at, end_at, memo: f.memo || null, user_id: user?.id ?? '' }
+    return { title: f.title.trim(), start_at, end_at, memo: f.memo || null, task_id: f.task_id ?? null, user_id: user?.id ?? '' }
   }
 
   /* ─── クイック保存 ─── */

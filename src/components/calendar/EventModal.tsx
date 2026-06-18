@@ -12,6 +12,7 @@ export type EventFormData = {
   endDate: string
   endTime: string
   memo: string
+  task_id?: string    // タスクから作成した場合に紐付け
 }
 
 type Mode = 'event' | 'from-task'
@@ -79,6 +80,7 @@ export function EventModal({ initialData, editTarget, tasks = [], onSave, onDele
       endDate: date,
       endTime: '10:00',
       memo: task.category ? `カテゴリ: ${task.category}` : '',
+      task_id: task.id,
     })
     setTaskStep('form')
   }

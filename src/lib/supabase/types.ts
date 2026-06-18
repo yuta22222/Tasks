@@ -29,6 +29,7 @@ export type EventRow = {
   start_at: string
   end_at: string
   memo: string | null
+  task_id: string | null
   created_at: string
 }
 

@@ -2,7 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { format } from 'date-fns'
-import { taskKeys, completionKeys } from '@/lib/query-keys'
+import { taskKeys, completionKeys, eventKeys } from '@/lib/query-keys'
 import type { Task, TaskInsert, TaskWithCompletion } from '@/types/task'
 import { toast } from 'sonner'
 
@@ -98,7 +98,6 @@ export function useTasks() {
             .eq('completed_date', today)
           if (error) throw error
         } else {
-          // user_id は DB の DEFAULT auth.uid() が自動セット
           const { error } = await supabase
             .from('task_completions')
             .insert({ task_id: task.id, completed_date: today } as any)
@@ -110,6 +109,10 @@ export function useTasks() {
           .update({ completed_at: isCompleted ? null : new Date().toISOString() } as any)
           .eq('id', task.id)
         if (error) throw error
+      }
+      // 完了時: 紐付いたカレンダーイベントを削除
+      if (!isCompleted) {
+        await supabase.from('events').delete().eq('task_id', task.id)
       }
     },
     // 楽観的更新: UIを即時反映
@@ -138,6 +141,7 @@ export function useTasks() {
     onSettled: () => {
       qc.invalidateQueries({ queryKey: taskKeys.all })
       qc.invalidateQueries({ queryKey: completionKeys.all })
+      qc.invalidateQueries({ queryKey: eventKeys.all })
     },
   })
 

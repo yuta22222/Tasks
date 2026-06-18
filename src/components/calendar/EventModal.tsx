@@ -15,6 +15,12 @@ export type EventFormData = {
   task_id?: string    // タスクから作成した場合に紐付け
 }
 
+function addOneDay(dateStr: string): string {
+  const d = new Date(dateStr + 'T00:00:00')
+  d.setDate(d.getDate() + 1)
+  return d.toISOString().slice(0, 10)
+}
+
 type Mode = 'event' | 'from-task'
 type TaskStep = 'select' | 'form'
 
@@ -61,7 +67,22 @@ export function EventModal({ initialData, editTarget, tasks = [], onSave, onDele
   }, [onClose])
 
   const set = (key: keyof EventFormData, value: string | boolean) =>
-    setForm(f => ({ ...f, [key]: value }))
+    setForm(f => {
+      const next = { ...f, [key]: value }
+      // 開始時間変更時、終了時間を1時間後に自動設定
+      if (key === 'startTime' && typeof value === 'string') {
+        const [h, m] = value.split(':').map(Number)
+        const endH = (h + 1) % 24
+        const endDay = h + 1 >= 24 ? addOneDay(f.startDate) : f.endDate
+        next.endTime = `${String(endH).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+        next.endDate = endDay
+      }
+      // 開始日変更時、終了日も同じ日に合わせる
+      if (key === 'startDate' && typeof value === 'string') {
+        next.endDate = value
+      }
+      return next
+    })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

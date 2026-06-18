@@ -48,18 +48,18 @@ const STYLE = {
     icon:      <Calendar size={11} />,
   },
   normal: {
-    card:      'bg-[var(--surface-1)] border border-[var(--border)] hover:border-[rgba(140,130,255,0.2)]',
-    dotFilled: 'bg-[var(--accent)]',
-    dotEmpty:  'border-[var(--border)] hover:border-[var(--accent)]/60',
+    card:      'bg-[var(--surface-1)] border border-[var(--border)] hover:border-emerald-500/25',
+    dotFilled: 'bg-emerald-500',
+    dotEmpty:  'border-[var(--border)] hover:border-emerald-500/60',
     glow:      false,
     badge:     '',
     metaColor: 'text-[var(--text-secondary)]',
     icon:      <Calendar size={11} />,
   },
   'no-date': {
-    card:      'bg-[var(--surface-1)] border border-[var(--border)] hover:border-[rgba(140,130,255,0.2)]',
+    card:      'bg-[var(--surface-1)] border border-[var(--border)] hover:border-emerald-500/20',
     dotFilled: 'bg-[var(--muted)]',
-    dotEmpty:  'border-[var(--border)] hover:border-[var(--accent)]/60',
+    dotEmpty:  'border-[var(--border)] hover:border-emerald-500/50',
     glow:      false,
     badge:     '',
     metaColor: 'text-[var(--text-secondary)]',
@@ -242,7 +242,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
                 </span>
               )}
               {task.category && (
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-lg" style={{ background: 'var(--accent-light)', color: 'var(--accent)', border: '1px solid rgba(139,124,248,0.2)' }}>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-lg" style={{ background: 'rgba(16,185,129,0.1)', color: 'var(--accent)', border: '1px solid rgba(16,185,129,0.2)' }}>
                   {task.category}
                 </span>
               )}

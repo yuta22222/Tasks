@@ -8,14 +8,12 @@ import { useUIStore } from '@/stores/uiStore'
 const navItems = [
   { href: '/dashboard', label: 'ホーム',     icon: LayoutDashboard },
   { href: '/calendar',  label: 'カレンダー', icon: Calendar },
-  null, // FABプレースホルダー
+  null,
   { href: '/tasks',     label: 'タスク',     icon: CheckSquare },
 ]
 
 function useFABConfig(pathname: string) {
-  if (pathname.startsWith('/calendar')) {
-    return { label: '予定を追加', ariaLabel: '予定を追加' }
-  }
+  if (pathname.startsWith('/calendar')) return { label: '予定を追加', ariaLabel: '予定を追加' }
   return { label: 'タスクを追加', ariaLabel: 'タスクを追加' }
 }
 
@@ -25,18 +23,15 @@ export function BottomNav() {
   const fab = useFABConfig(pathname)
 
   const handleFAB = () => {
-    if (pathname.startsWith('/calendar')) {
-      openCalendarEventModal()
-    } else {
-      openTaskModal()
-    }
+    if (pathname.startsWith('/calendar')) openCalendarEventModal()
+    else openTaskModal()
   }
 
   return (
     <nav
       className="lg:hidden fixed bottom-0 left-0 right-0 z-30 border-t pb-safe"
       style={{
-        background: 'rgba(13,13,20,0.92)',
+        background: 'rgba(11,17,13,0.92)',
         backdropFilter: 'blur(24px) saturate(180%)',
         WebkitBackdropFilter: 'blur(24px) saturate(180%)',
         borderColor: 'var(--border)',
@@ -44,13 +39,13 @@ export function BottomNav() {
       aria-label="メインナビゲーション"
     >
       <div className="flex items-center h-[60px] max-w-lg mx-auto px-2">
-        {navItems.map((item, i) => {
+        {navItems.map((item) => {
           if (!item) {
             return (
               <div key="fab" className="flex-1 flex justify-center">
                 <button
                   onClick={handleFAB}
-                  className="group relative flex items-center gap-1.5 h-10 rounded-2xl text-white active:scale-90 transition-all duration-200 px-4 text-xs font-bold"
+                  className="group flex items-center gap-1.5 h-10 rounded-2xl text-white active:scale-90 transition-all duration-200 px-4 text-xs font-bold"
                   style={{
                     background: 'var(--gradient-primary)',
                     boxShadow: 'var(--shadow-accent)',
@@ -68,15 +63,12 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={cn(
-                'flex-1 flex flex-col items-center justify-center gap-1 min-h-[44px] text-[10px] font-medium transition-all duration-150',
-                active ? '' : '',
-              )}
-              style={{ color: active ? 'var(--accent)' : 'var(--muted)' }}
+              className="flex-1 flex flex-col items-center justify-center gap-1 min-h-[44px] text-[10px] font-medium transition-all duration-150"
+              style={{ color: active ? 'var(--accent)' : 'var(--muted)', fontWeight: active ? 600 : 500 }}
               aria-current={active ? 'page' : undefined}
             >
               <item.icon size={19} strokeWidth={active ? 2.2 : 1.6} aria-hidden="true" />
-              <span style={{ fontWeight: active ? 600 : 500 }}>{item.label}</span>
+              <span>{item.label}</span>
             </Link>
           )
         })}

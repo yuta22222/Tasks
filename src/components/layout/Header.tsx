@@ -12,16 +12,24 @@ export function Header() {
   const meta = Object.entries(pageMeta).find(([key]) => pathname.startsWith(key))?.[1]
 
   return (
-    <header className="h-16 flex items-center px-5 lg:px-7 sticky top-0 z-20 bg-[var(--bg)]/95 backdrop-blur-md border-b border-[var(--border)]">
-      <div>
+    <header
+      className="h-14 flex items-center px-5 lg:px-7 sticky top-0 z-20 border-b"
+      style={{
+        background: 'rgba(6,6,10,0.82)',
+        backdropFilter: 'blur(24px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+        borderColor: 'var(--border)',
+      }}
+    >
+      <div className="flex items-baseline gap-2.5">
         <h1
-          className="text-xl font-bold text-[var(--text-primary)] leading-tight"
-          style={{ letterSpacing: '-0.02em' }}
+          className="text-[17px] font-bold text-[var(--text-primary)] leading-tight"
+          style={{ letterSpacing: '-0.025em' }}
         >
           {meta?.title ?? ''}
         </h1>
         {meta?.sub && (
-          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{meta.sub}</p>
+          <span className="text-xs text-[var(--muted)] hidden sm:inline">{meta.sub}</span>
         )}
       </div>
     </header>

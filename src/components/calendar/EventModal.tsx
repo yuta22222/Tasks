@@ -118,9 +118,9 @@ export function EventModal({ initialData, editTarget, tasks = [], onSave, onDele
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-md" />
 
-      <div className="relative w-full max-w-md bg-[var(--surface-1)] border border-[var(--border)] rounded-2xl shadow-2xl shadow-black/60 animate-in fade-in-0 zoom-in-95 duration-150">
+      <div className="relative w-full max-w-md rounded-2xl animate-in fade-in-0 zoom-in-95 duration-150" style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-elevated)' }}>
 
         {/* ヘッダー */}
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-[var(--border)]">

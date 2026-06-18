@@ -21,45 +21,45 @@ export function getUrgency(task: TaskWithCompletion): UrgencyLevel {
 
 const STYLE = {
   overdue: {
-    card:      'bg-[#1E1014] border border-red-500/30',
+    card:      'bg-[#180C10] border border-red-500/25 hover:border-red-400/40',
     dotFilled: 'bg-red-400',
-    dotEmpty:  'border-red-400/70 hover:border-red-400',
+    dotEmpty:  'border-red-400/60 hover:border-red-400',
     glow:      true,
-    badge:     'bg-red-500/15 text-red-300 border border-red-500/30',
+    badge:     'bg-red-500/12 text-red-300 border border-red-500/25',
     metaColor: 'text-red-400',
     icon:      <AlertCircle size={11} />,
   },
   today: {
-    card:      'bg-[#1A1608] border border-yellow-500/30',
-    dotFilled: 'bg-yellow-400',
-    dotEmpty:  'border-yellow-400/70 hover:border-yellow-400',
+    card:      'bg-[#151108] border border-amber-500/25 hover:border-amber-400/40',
+    dotFilled: 'bg-amber-400',
+    dotEmpty:  'border-amber-400/60 hover:border-amber-400',
     glow:      true,
-    badge:     'bg-yellow-500/15 text-yellow-300 border border-yellow-500/30',
-    metaColor: 'text-yellow-400',
+    badge:     'bg-amber-500/12 text-amber-300 border border-amber-500/25',
+    metaColor: 'text-amber-400',
     icon:      <Clock size={11} />,
   },
   soon: {
-    card:      'bg-[var(--surface-1)] border border-[var(--border)]',
+    card:      'bg-[var(--surface-1)] border border-[var(--border)] hover:border-orange-400/30',
     dotFilled: 'bg-orange-400',
-    dotEmpty:  'border-orange-400/60 hover:border-orange-400',
+    dotEmpty:  'border-[var(--border)] hover:border-orange-400/70',
     glow:      false,
-    badge:     'bg-orange-500/12 text-orange-300 border border-orange-400/25',
+    badge:     'bg-orange-500/10 text-orange-300 border border-orange-400/20',
     metaColor: 'text-orange-400',
     icon:      <Calendar size={11} />,
   },
   normal: {
-    card:      'bg-[var(--surface-1)] border border-[var(--border)]',
-    dotFilled: 'bg-indigo-400',
-    dotEmpty:  'border-[var(--border)] hover:border-indigo-400',
+    card:      'bg-[var(--surface-1)] border border-[var(--border)] hover:border-[rgba(140,130,255,0.2)]',
+    dotFilled: 'bg-[var(--accent)]',
+    dotEmpty:  'border-[var(--border)] hover:border-[var(--accent)]/60',
     glow:      false,
     badge:     '',
     metaColor: 'text-[var(--text-secondary)]',
     icon:      <Calendar size={11} />,
   },
   'no-date': {
-    card:      'bg-[var(--surface-1)] border border-[var(--border)]',
+    card:      'bg-[var(--surface-1)] border border-[var(--border)] hover:border-[rgba(140,130,255,0.2)]',
     dotFilled: 'bg-[var(--muted)]',
-    dotEmpty:  'border-[var(--border)] hover:border-indigo-400',
+    dotEmpty:  'border-[var(--border)] hover:border-[var(--accent)]/60',
     glow:      false,
     badge:     '',
     metaColor: 'text-[var(--text-secondary)]',
@@ -71,7 +71,7 @@ const STYLE = {
     dotEmpty:  'border-transparent',
     glow:      false,
     badge:     '',
-    metaColor: 'text-[var(--text-secondary)]',
+    metaColor: 'text-[var(--muted)]',
     icon:      null,
   },
 } as const
@@ -170,10 +170,9 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
           transition: swipeDelta === 0 ? 'transform 0.2s ease' : undefined,
         }}
         className={cn(
-          'group relative flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-colors duration-200',
+          'group relative flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-200',
           s.card,
-          !task.isCompletedToday && swipeDelta === 0 && 'hover:brightness-110',
-          task.isCompletedToday && 'opacity-50',
+          task.isCompletedToday && 'opacity-40',
         )}
         onContextMenu={(e) => { e.preventDefault(); setActionsVisible(v => !v) }}
       >
@@ -243,7 +242,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
                 </span>
               )}
               {task.category && (
-                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/25">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-lg" style={{ background: 'var(--accent-light)', color: 'var(--accent)', border: '1px solid rgba(139,124,248,0.2)' }}>
                   {task.category}
                 </span>
               )}

@@ -12,7 +12,6 @@ const navItems = [
   { href: '/tasks',     label: 'タスク',     icon: CheckSquare },
 ]
 
-// FABの見た目・ラベルをパスによって変える
 function useFABConfig(pathname: string) {
   if (pathname.startsWith('/calendar')) {
     return { label: '予定を追加', ariaLabel: '予定を追加' }
@@ -35,24 +34,31 @@ export function BottomNav() {
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-[var(--surface-0)]/95 backdrop-blur-md border-t border-[var(--border)] pb-safe"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-30 border-t pb-safe"
+      style={{
+        background: 'rgba(13,13,20,0.92)',
+        backdropFilter: 'blur(24px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+        borderColor: 'var(--border)',
+      }}
       aria-label="メインナビゲーション"
     >
-      <div className="flex items-center h-14 max-w-lg mx-auto px-2">
+      <div className="flex items-center h-[60px] max-w-lg mx-auto px-2">
         {navItems.map((item, i) => {
           if (!item) {
-            // FAB（コンテキスト依存）
             return (
               <div key="fab" className="flex-1 flex justify-center">
                 <button
                   onClick={handleFAB}
-                  className="group relative flex items-center gap-2 h-11 rounded-2xl text-white shadow-lg shadow-indigo-500/30 active:scale-90 transition-all duration-200 px-4"
-                  style={{ background: 'var(--gradient-primary)' }}
+                  className="group relative flex items-center gap-1.5 h-10 rounded-2xl text-white active:scale-90 transition-all duration-200 px-4 text-xs font-bold"
+                  style={{
+                    background: 'var(--gradient-primary)',
+                    boxShadow: 'var(--shadow-accent)',
+                  }}
                   aria-label={fab.ariaLabel}
                 >
-                  <Plus size={18} strokeWidth={2.5} aria-hidden="true" />
-                  {/* Extended FAB label — visible to show context */}
-                  <span className="text-xs font-bold tracking-tight">{fab.label}</span>
+                  <Plus size={16} strokeWidth={2.5} aria-hidden="true" />
+                  <span style={{ letterSpacing: '-0.01em' }}>{fab.label}</span>
                 </button>
               </div>
             )
@@ -64,12 +70,13 @@ export function BottomNav() {
               href={item.href}
               className={cn(
                 'flex-1 flex flex-col items-center justify-center gap-1 min-h-[44px] text-[10px] font-medium transition-all duration-150',
-                active ? 'text-[var(--accent)]' : 'text-[var(--muted)]',
+                active ? '' : '',
               )}
+              style={{ color: active ? 'var(--accent)' : 'var(--muted)' }}
               aria-current={active ? 'page' : undefined}
             >
-              <item.icon size={19} strokeWidth={active ? 2.2 : 1.8} aria-hidden="true" />
-              <span>{item.label}</span>
+              <item.icon size={19} strokeWidth={active ? 2.2 : 1.6} aria-hidden="true" />
+              <span style={{ fontWeight: active ? 600 : 500 }}>{item.label}</span>
             </Link>
           )
         })}

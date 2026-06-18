@@ -98,7 +98,7 @@ type UIMode =
 export function CalendarView() {
   const { events, createEvent, updateEvent, deleteEvent } = useCalendarEvents()
   const { user } = useAuth()
-  const { tasks, createTask } = useTasks()
+  const { tasks } = useTasks()
   const eventsPlugin = useMemo(() => createEventsServicePlugin(), [])
   const [currentView, setCurrentView] = useState<ViewName>('month-grid')
   const [ui, setUi] = useState<UIMode>({ kind: 'none' })
@@ -276,14 +276,6 @@ export function CalendarView() {
     }
   }, [ui, createEvent, updateEvent])
 
-  /* ─── タスク保存（カレンダーから） ─── */
-  const handleModalSaveTask = useCallback((f: import('./EventModal').TaskQuickFormData) => {
-    createTask.mutate(
-      { title: f.title.trim(), due_date: f.due_date || null, category: f.category || null } as any,
-      { onSuccess: () => setUi({ kind: 'none' }) }
-    )
-  }, [createTask])
-
   /* ─── 削除 ─── */
   const handleDelete = useCallback((id: string) => {
     deleteEvent.mutate(id, { onSuccess: () => setUi({ kind: 'none' }) })
@@ -385,11 +377,11 @@ export function CalendarView() {
         <EventModal
           initialData={ui.form}
           editTarget={ui.editTarget}
+          tasks={tasks}
           onSave={handleModalSave}
-          onSaveTask={handleModalSaveTask}
           onDelete={ui.editTarget ? () => handleDelete(ui.editTarget!.id) : undefined}
           onClose={() => setUi({ kind: 'none' })}
-          loading={createEvent.isPending || updateEvent.isPending || createTask.isPending}
+          loading={createEvent.isPending || updateEvent.isPending}
         />
       )}
 

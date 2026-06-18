@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { Task } from '@/types/task'
 
+const CATEGORIES = ['仕事', 'インプット', '恋愛', '磨き', 'その他'] as const
+
 const schema = z.object({
   title: z.string().min(1, 'タイトルを入力してください'),
   due_date: z.string().optional(),
@@ -39,6 +41,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, isSubmitting }: Pr
   })
 
   const recurrence = watch('recurrence_type')
+  const category = watch('category') ?? ''
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -69,13 +72,18 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, isSubmitting }: Pr
           />
         </div>
         <div className="space-y-1">
-          <Label htmlFor="category" className="text-sm text-[var(--text-primary)]">カテゴリ</Label>
-          <Input
-            id="category"
-            placeholder="例: 仕事"
-            {...register('category')}
-            className="bg-[var(--surface-2)] border-[var(--border)] focus:ring-2 focus:ring-[var(--accent)]/40 focus:border-[var(--accent)] transition-all duration-150 rounded-xl min-h-[44px]"
-          />
+          <Label className="text-sm text-[var(--text-primary)]">カテゴリ</Label>
+          <Select value={category} onValueChange={(v: string | null) => setValue('category', !v || v === '__none__' ? '' : v)}>
+            <SelectTrigger className="bg-[var(--surface-2)] border-[var(--border)] focus:ring-2 focus:ring-[var(--accent)]/40 focus:border-[var(--accent)] transition-all duration-150 rounded-xl min-h-[44px]">
+              <SelectValue placeholder="選択..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__none__">なし</SelectItem>
+              {CATEGORIES.map(c => (
+                <SelectItem key={c} value={c}>{c}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

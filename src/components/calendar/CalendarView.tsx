@@ -8,7 +8,7 @@ import '@/styles/schedule-x-overrides.css'
 import { useCalendarEvents } from '@/hooks/useCalendarEvents'
 import { useAuth } from '@/hooks/useAuth'
 import { useTasks } from '@/hooks/useTasks'
-import { useMemo, useEffect, useState, useCallback } from 'react'
+import { useMemo, useEffect, useState, useCallback, useRef } from 'react'
 import { getUrgency } from '@/components/tasks/TaskCard'
 import { EventQuickCreate } from './EventQuickCreate'
 import { EventModal, type EventFormData } from './EventModal'
@@ -143,7 +143,13 @@ export function CalendarView() {
   const [currentView, setCurrentView] = useState<ViewName>('month-grid')
   const [ui, setUi] = useState<UIMode>({ kind: 'none' })
   const [showOffSettings, setShowOffSettings] = useState(false)
-  const { offWeekdays, offDates } = useOffDaysStore()
+  const [offDayEditMode, setOffDayEditMode] = useState(false)
+  const offDayEditModeRef = useRef(false)
+  const toggleDateRef = useRef<(date: string) => void>(() => {})
+  const { offWeekdays, offDates, toggleDate } = useOffDaysStore()
+
+  useEffect(() => { offDayEditModeRef.current = offDayEditMode }, [offDayEditMode])
+  useEffect(() => { toggleDateRef.current = toggleDate }, [toggleDate])
 
   // オフ日CSS injection
   useEffect(() => {
@@ -224,10 +230,13 @@ export function CalendarView() {
     events: calendarEvents,
     plugins: [eventsPlugin],
     callbacks: {
-      /* 月ビュー: 日付クリック → クイック作成（終日） */
+      /* 月ビュー: 日付クリック */
       onClickDate(date: Temporal.PlainDate, e?: UIEvent) {
+        if (offDayEditModeRef.current) {
+          toggleDateRef.current(date.toString())
+          return
+        }
         const me = e as MouseEvent | undefined
-        const today = Temporal.Now.plainDateISO('Asia/Tokyo')
         const form: EventFormData = {
           title: '',
           allDay: true,
@@ -387,18 +396,31 @@ export function CalendarView() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* オフ日設定ボタン */}
+          {/* 曜日設定（ギアアイコン） */}
           <button
             onClick={() => setShowOffSettings(true)}
             className="w-8 h-8 flex items-center justify-center rounded-xl transition-all"
             style={{
-              background: offWeekdays.length > 0 || offDates.length > 0 ? 'rgba(16,185,129,0.12)' : 'var(--surface-2)',
-              color: offWeekdays.length > 0 || offDates.length > 0 ? 'var(--accent)' : 'var(--muted)',
+              background: (offWeekdays.length > 0 || offDates.length > 0) ? 'rgba(16,185,129,0.12)' : 'var(--surface-2)',
+              color: (offWeekdays.length > 0 || offDates.length > 0) ? 'var(--accent)' : 'var(--muted)',
               border: '1px solid var(--border)',
             }}
-            title="オフ日を設定"
+            title="オフ日の曜日設定"
           >
-            <Settings2 size={14} />
+            <Settings2 size={13} />
+          </button>
+          {/* 個別日付編集モードトグル */}
+          <button
+            onClick={() => setOffDayEditMode(v => !v)}
+            className="flex items-center gap-1.5 h-8 px-3 rounded-xl text-xs font-semibold transition-all"
+            style={{
+              background: offDayEditMode ? 'var(--accent)' : 'var(--surface-2)',
+              color: offDayEditMode ? '#fff' : 'var(--muted)',
+              border: offDayEditMode ? '1px solid transparent' : '1px solid var(--border)',
+            }}
+            title="日付をタップしてオフ日を個別設定"
+          >
+            {offDayEditMode ? '設定中 ✕' : 'オフ日'}
           </button>
 
           {/* 新規作成ボタン */}

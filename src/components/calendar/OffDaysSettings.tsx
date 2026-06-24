@@ -31,11 +31,7 @@ export function OffDaysSettings({ onClose }: Props) {
           <h2 className="text-[15px] font-bold text-[var(--text-primary)]" style={{ letterSpacing: '-0.02em' }}>
             オフ日の設定
           </h2>
-          <button
-            onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors"
-            style={{ color: 'var(--muted)' }}
-          >
+          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg" style={{ color: 'var(--muted)' }}>
             <X size={15} />
           </button>
         </div>
@@ -66,23 +62,13 @@ export function OffDaysSettings({ onClose }: Props) {
           </div>
         </div>
 
-        {/* 個別日付 */}
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
-            個別オフ日を追加
-          </p>
-          <input
-            type="date"
-            onChange={(e) => { if (e.target.value) toggleDate(e.target.value) }}
-            className="w-full rounded-xl px-3 py-2.5 text-sm transition-colors"
-            style={{
-              background: 'var(--surface-2)',
-              border: '1px solid var(--border)',
-              color: 'var(--text-primary)',
-            }}
-          />
-          {offDates.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-2 max-h-28 overflow-y-auto">
+        {/* 個別オフ日リスト（カレンダーでタップして追加） */}
+        {offDates.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+              個別オフ日（タップで解除）
+            </p>
+            <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto">
               {[...offDates].sort().map((date) => (
                 <button
                   key={date}
@@ -94,13 +80,12 @@ export function OffDaysSettings({ onClose }: Props) {
                     border: '1px solid rgba(16,185,129,0.2)',
                   }}
                 >
-                  {date}
-                  <X size={10} />
+                  {date} <X size={10} />
                 </button>
               ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <button
           onClick={onClose}

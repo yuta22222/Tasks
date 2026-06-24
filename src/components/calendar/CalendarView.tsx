@@ -118,7 +118,10 @@ function generateOffDayCSS(offWeekdays: number[], offDates: string[]): string {
   const end   = new Date(now.getFullYear() + 2, now.getMonth(), 1)
   const cur = new Date(start)
   while (cur < end) {
-    const dateStr = cur.toISOString().slice(0, 10)
+    const y = cur.getFullYear()
+    const m = String(cur.getMonth() + 1).padStart(2, '0')
+    const d = String(cur.getDate()).padStart(2, '0')
+    const dateStr = `${y}-${m}-${d}`
     const isOff = offWeekdays.includes(cur.getDay()) || offDates.includes(dateStr)
     if (isOff) selectors.push(`[data-date="${dateStr}"]`)
     cur.setDate(cur.getDate() + 1)

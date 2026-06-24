@@ -33,7 +33,7 @@ export function TaskForm({ defaultValues, onSubmit, onCancel, isSubmitting }: Pr
     resolver: zodResolver(schema),
     defaultValues: {
       title: defaultValues?.title ?? '',
-      due_date: defaultValues?.due_date ?? '',
+      due_date: defaultValues?.due_date ?? new Date().toLocaleDateString('sv'),
       category: defaultValues?.category ?? '',
       memo: defaultValues?.memo ?? '',
       recurrence_type: (defaultValues?.recurrence_type as FormValues['recurrence_type']) ?? 'none',

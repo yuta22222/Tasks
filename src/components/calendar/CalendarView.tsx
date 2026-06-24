@@ -13,7 +13,10 @@ import { getUrgency } from '@/components/tasks/TaskCard'
 import { EventQuickCreate } from './EventQuickCreate'
 import { EventModal, type EventFormData } from './EventModal'
 import { EventDetailPopover } from './EventDetailPopover'
+import { OffDaysSettings } from './OffDaysSettings'
 import { useUIStore } from '@/stores/uiStore'
+import { useOffDaysStore } from '@/stores/offDaysStore'
+import { Settings2 } from 'lucide-react'
 import type { CalendarEvent } from '@/types/event'
 
 /* ─── Temporal ヘルパー ─── */
@@ -106,6 +109,25 @@ type UIMode =
   | { kind: 'modal'; form: EventFormData; editTarget?: CalendarEvent }
   | { kind: 'detail'; event: CalendarEvent; x: number; y: number }
 
+/* ─── オフ日CSS生成 ─── */
+function generateOffDayCSS(offWeekdays: number[], offDates: string[]): string {
+  if (offWeekdays.length === 0 && offDates.length === 0) return ''
+  const selectors: string[] = []
+  const now = new Date()
+  const start = new Date(now.getFullYear() - 1, now.getMonth(), 1)
+  const end   = new Date(now.getFullYear() + 2, now.getMonth(), 1)
+  const cur = new Date(start)
+  while (cur < end) {
+    const dateStr = cur.toISOString().slice(0, 10)
+    const isOff = offWeekdays.includes(cur.getDay()) || offDates.includes(dateStr)
+    if (isOff) selectors.push(`[data-date="${dateStr}"]`)
+    cur.setDate(cur.getDate() + 1)
+  }
+  if (selectors.length === 0) return ''
+  const s = selectors.join(',')
+  return `${s}{background:rgba(255,255,255,0.02)!important;}${s} .sx__month-grid-day__header-date{opacity:0.35!important;}${s} .sx__month-grid-day__header{opacity:0.5!important;}`
+}
+
 export function CalendarView() {
   const { events, createEvent, updateEvent, deleteEvent } = useCalendarEvents()
   const { user } = useAuth()
@@ -113,6 +135,21 @@ export function CalendarView() {
   const eventsPlugin = useMemo(() => createEventsServicePlugin(), [])
   const [currentView, setCurrentView] = useState<ViewName>('month-grid')
   const [ui, setUi] = useState<UIMode>({ kind: 'none' })
+  const [showOffSettings, setShowOffSettings] = useState(false)
+  const { offWeekdays, offDates } = useOffDaysStore()
+
+  // オフ日CSS injection
+  useEffect(() => {
+    const id = 'off-days-style'
+    let el = document.getElementById(id) as HTMLStyleElement | null
+    if (!el) {
+      el = document.createElement('style')
+      el.id = id
+      document.head.appendChild(el)
+    }
+    el.textContent = generateOffDayCSS(offWeekdays, offDates)
+    return () => { el?.remove() }
+  }, [offWeekdays, offDates])
 
   // BottomNav FABからのトリガーを購読
   const { calendarEventModalOpen, closeCalendarEventModal } = useUIStore()
@@ -342,28 +379,45 @@ export function CalendarView() {
           ))}
         </div>
 
-        {/* 新規作成ボタン */}
-        <button
-          onClick={() => {
-            const today = Temporal.Now.plainDateISO('Asia/Tokyo')
-            setUi({
-              kind: 'modal',
-              form: {
-                title: '',
-                allDay: false,
-                startDate: today.toString(),
-                startTime: '09:00',
-                endDate:   today.toString(),
-                endTime:   '10:00',
-                memo: '',
-              },
-            })
-          }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-all shadow-[0_2px_8px_rgba(129,140,248,0.3)]"
-        >
-          <span className="text-base leading-none">+</span>
-          <span>予定を追加</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {/* オフ日設定ボタン */}
+          <button
+            onClick={() => setShowOffSettings(true)}
+            className="w-8 h-8 flex items-center justify-center rounded-xl transition-all"
+            style={{
+              background: offWeekdays.length > 0 || offDates.length > 0 ? 'rgba(16,185,129,0.12)' : 'var(--surface-2)',
+              color: offWeekdays.length > 0 || offDates.length > 0 ? 'var(--accent)' : 'var(--muted)',
+              border: '1px solid var(--border)',
+            }}
+            title="オフ日を設定"
+          >
+            <Settings2 size={14} />
+          </button>
+
+          {/* 新規作成ボタン */}
+          <button
+            onClick={() => {
+              const today = Temporal.Now.plainDateISO('Asia/Tokyo')
+              setUi({
+                kind: 'modal',
+                form: {
+                  title: '',
+                  allDay: false,
+                  startDate: today.toString(),
+                  startTime: '09:00',
+                  endDate:   today.toString(),
+                  endTime:   '10:00',
+                  memo: '',
+                },
+              })
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white transition-all"
+            style={{ background: 'var(--gradient-primary)', boxShadow: 'var(--shadow-accent)' }}
+          >
+            <span className="text-base leading-none">+</span>
+            <span>予定を追加</span>
+          </button>
+        </div>
       </div>
 
       {/* カレンダー本体 */}
@@ -401,6 +455,9 @@ export function CalendarView() {
           loading={createEvent.isPending || updateEvent.isPending}
         />
       )}
+
+      {/* ─── オフ日設定 ─── */}
+      {showOffSettings && <OffDaysSettings onClose={() => setShowOffSettings(false)} />}
 
       {/* ─── イベント詳細ポップオーバー ─── */}
       {ui.kind === 'detail' && (

@@ -125,7 +125,11 @@ function generateOffDayCSS(offWeekdays: number[], offDates: string[]): string {
   }
   if (selectors.length === 0) return ''
   const s = selectors.join(',')
-  return `${s}{background:rgba(255,255,255,0.02)!important;}${s} .sx__month-grid-day__header-date{opacity:0.35!important;}${s} .sx__month-grid-day__header{opacity:0.5!important;}`
+  return [
+    `${s} { background: #080C09 !important; }`,
+    `${s} * { opacity: 0.4 !important; }`,
+    `${s} .sx__event, ${s} .sx__month-grid-day__event { opacity: 0.5 !important; }`,
+  ].join('')
 }
 
 export function CalendarView() {
